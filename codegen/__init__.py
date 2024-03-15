@@ -4,14 +4,6 @@ from typing import Type, List, Tuple, Set
 import z3
 
 
-class Relation(Enum):
-    @staticmethod
-    def _generate_next_value_(name, start, count, last_values):
-        return count
-
-    EQ = auto()
-
-
 class Name(Enum):
     @staticmethod
     def _generate_next_value_(name, start, count, last_values):
