@@ -22,6 +22,6 @@ k.addi(reg1, reg2, imm1)
 k.addi(reg1, reg2, imm1)
 
 
-for case in k.gen():
+for case in k.solve():
     print(case)
     print("-----")

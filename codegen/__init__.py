@@ -139,7 +139,7 @@ class Kernel:
         s.update(arg for inst in self.instructions for arg in inst.args)
         return s
 
-    def gen(self):
+    def solve(self):
         assert self.collect_args() == self.args
 
         while self.solver.check() == z3.sat:
