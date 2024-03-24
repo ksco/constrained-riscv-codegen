@@ -31,11 +31,11 @@ init_gprs = """li       x1, 0
     li       x31, 0
 """
 
-disable_multicore = """csrr a0, mhartid
-1:  bnez     a0, 1b
-"""
+# Simple userspace template
+trivial_template = {
+    "prolog": f"""    #### Generated using trivial template ####
 
-default_machine_prolog = f"""# PROLOG: Initialize all GPRs to zero
+    # PROLOG: Initialize all GPRs to zero
     .section .text.init
     .align  6
     .globl _start
@@ -46,11 +46,11 @@ reset_vector:
     {init_gprs}
 
 run:
-"""
-
-default_machine_epilog = """# EPILOG: Exit
+""",
+    "epilog": """    # EPILOG: Exit
     li       a0, 0
     li       a7, 93
     ecall
-"""
-default_machine_reset = "# RESET: nothing to do in reset stage"
+""",
+    "reset": "    # RESET: nothing to do in reset stage",
+}

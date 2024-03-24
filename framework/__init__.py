@@ -10,11 +10,8 @@ registered_recipes: List[Recipe] = [
         hello,
         {
             "name": "hello",
-            "desc": "Hello world recipe as an simple example of the API.",
-            "prolog": default_machine_prolog,
-            "epilog": default_machine_epilog,
-            "reset": default_machine_reset,
-        },
+            "desc": "Hello world recipe as an simple example of the API."
+        } | trivial_template,
     )
 ]
 

@@ -84,10 +84,10 @@ class Recipe:
 
     def output(self):
         res: str = ""
-        res += self.meta["prolog"] + "\n\n"
+        res += self.meta["prolog"] + "\n"
         for case in self.solve():
             res += self.meta["reset"] + "\n\n"
-            res += case
+            res += case + "\n"
         res += self.meta["reset"] + "\n\n"
-        res += self.meta["epilog"] + "\n\n"
+        res += self.meta["epilog"] + "\n"
         return res
