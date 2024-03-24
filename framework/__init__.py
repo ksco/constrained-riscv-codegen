@@ -29,8 +29,8 @@ def check_registered_recipes():
 def list_all_recipes(_: Namespace):
     res: str = ""
     for r in registered_recipes:
-        res += r.meta["name"]
-        res += "\t" + ("\n\t".join(r.meta["desc"].split("\n")))
+        res += r.meta["name"] + "\n"
+        res += "    " + ("\n    ".join(r.meta["desc"].split("\n")))
     return res
 
 
