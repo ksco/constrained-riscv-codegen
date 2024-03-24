@@ -1,26 +1,32 @@
-from typing import Callable, List, Optional
+from typing import Set, List, Optional
 from argparse import ArgumentParser, Namespace
 from recipes.hello import hello
 
 from .recipe import Recipe, RecipeMeta
+from .templates import *
 
-registered_recipes: List[Recipe] = []
+registered_recipes: List[Recipe] = [
+    Recipe(
+        hello,
+        {
+            "name": "hello",
+            "desc": "Hello world recipe as an simple example of the API.",
+            "prolog": default_machine_prolog,
+            "epilog": default_machine_epilog,
+            "reset": default_machine_reset,
+        },
+    )
+]
 
 
-def register_recipe(f: Callable, meta: RecipeMeta):
-    registered_recipes.append(Recipe(f, meta))
-
-
-register_recipe(
-    hello,
-    {
-        "name": "hello",
-        "desc": "Hello world recipe as an simple example of the API.",
-        "prolog": "# TODO: Add prolog",
-        "epilog": "# TODO: Add epilog",
-        "reset": "# TODO: Add reset",
-    },
-)
+def check_registered_recipes():
+    names: Set[str] = set()
+    for r in registered_recipes:
+        if r.meta["name"] in names:
+            assert (
+                False
+            ), 'Trying to register recipes with the same name: {r.meta["name"]}'
+        names.add(r.meta["name"])
 
 
 def list_all_recipes(_: Namespace):

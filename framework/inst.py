@@ -44,8 +44,8 @@ class InstNameEnum(Enum):
         return count
 
     ADDI = auto()
-    BEQ = auto()
-    BNE = auto()
+    SLLI = auto()
+    SRLI = auto()
     Count = auto()
 
 

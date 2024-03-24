@@ -76,7 +76,7 @@ class Recipe:
                     if isinstance(inst.name, Variable)
                     else []
                 ) + [int(model[arg].as_signed_long()) for arg in inst.args]
-                res += inst.disassembly(vals) + "\n"
+                res += "    " + inst.disassembly(vals) + "\n"
             yield res
             self.solver.add(
                 z3.Or([f() != model[f] for f in model.decls() if f.arity() == 0])
