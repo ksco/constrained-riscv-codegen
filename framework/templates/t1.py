@@ -2,7 +2,7 @@ from .common import init_gprs, disable_multicore, enable_vector
 
 # Simple userspace template
 template = {
-    "prolog": f"""    #### Generated using trivial template ####
+    "prolog": f"""    #### Generated using basic rvv integer chaining template ####
 
     # PROLOG: Initialize all GPRs to zero
     .section .text.init
