@@ -3,6 +3,7 @@ from framework.inst import Inst, Imm, GPR, InstName, InstNameEnum, LMUL, SEW, VF
 from z3 import *
 
 VLEN = 1024
+RV32 = True
 
 
 # noinspection PyStatementEffect
@@ -45,7 +46,7 @@ def rvv_integer_chaining_basic(r: Recipe):
             op3 == InstNameEnum.VMUL_VV.value,
             op3 == InstNameEnum.VSUB_VV.value,
         ),
-    ]
+    ] + ([eew != 3] if RV32 else [])
 
     r << Inst.make("la", "a0", "test_data")
     r << Inst.make("la", "a1", "result_data")
