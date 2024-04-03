@@ -2,6 +2,7 @@ from framework.recipe import Recipe
 from framework.inst import Inst, Imm, GPR, InstName, InstNameEnum, LMUL, SEW, VFR, MEM
 from z3 import *
 
+# These should be command line options
 VLEN = 1024
 RV32 = True
 
