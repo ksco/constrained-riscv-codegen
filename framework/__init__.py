@@ -1,18 +1,26 @@
 from typing import Set, List, Optional
 from argparse import ArgumentParser, Namespace
 from recipes.hello import hello
+from recipes.rvv_integer_chaining_basic import rvv_integer_chaining_basic
 
 from .recipe import Recipe, RecipeMeta
-from .templates import *
+import framework.templates.basic as basic
+import framework.templates.t1 as t1
 
 registered_recipes: List[Recipe] = [
     Recipe(
         hello,
+        {"name": "hello", "desc": "Hello world recipe as an simple example of the API."}
+        | basic.template,
+    ),
+    Recipe(
+        rvv_integer_chaining_basic,
         {
-            "name": "hello",
-            "desc": "Hello world recipe as an simple example of the API."
-        } | trivial_template,
-    )
+            "name": "rvv_integer_chaining_basic_t1",
+            "desc": "Basic RISC-V Vector integer chaining test for the t1 project.",
+        }
+        | t1.template,
+    ),
 ]
 
 
@@ -30,7 +38,7 @@ def list_all_recipes(_: Namespace):
     res: str = ""
     for r in registered_recipes:
         res += r.meta["name"] + "\n"
-        res += "    " + ("\n    ".join(r.meta["desc"].split("\n")))
+        res += "    " + ("\n    ".join(r.meta["desc"].split("\n"))) + "\n"
     return res
 
 
@@ -75,6 +83,9 @@ def initialize_cli():
     )
 
     args: Namespace = parser.parse_args()
+    if "func" not in args:
+        parser.print_usage()
+        parser.exit()
     res = args.func(args)
     if "filename" in args and args.filename is not None:
         with open(args.filename, "w") as file:

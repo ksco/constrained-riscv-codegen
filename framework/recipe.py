@@ -35,12 +35,17 @@ class Recipe:
             self.instructions.append(e)
         elif isinstance(e, Variable):
             self.vars.add(e)
+            if all(isinstance(c, z3.BoolRef) for c in e.initial_constraints()):
+                for c in e.initial_constraints():
+                    self.solver.add(c)
+            else:
+                assert False, "Wrong elements added to the recipe."
         elif isinstance(e, z3.BoolRef):
             self.solver.add(e)
         elif isinstance(e, list):
-            if all(isinstance(ee, z3.BoolRef) for ee in e):
-                for ee in e:
-                    self.solver.add(ee)
+            if all(isinstance(c, z3.BoolRef) for c in e):
+                for c in e:
+                    self.solver.add(c)
             else:
                 assert False, "Wrong elements added to the recipe."
         else:
@@ -71,11 +76,23 @@ class Recipe:
             model = self.solver.model()
             res: str = ""
             for inst in self.instructions:
+                assert all(
+                    model[arg] is not None
+                    for arg in inst.args
+                    if isinstance(arg, Variable)
+                )
                 vals = (
                     [int(model[inst.name].as_signed_long())]
                     if isinstance(inst.name, Variable)
                     else []
-                ) + [int(model[arg].as_signed_long()) for arg in inst.args]
+                ) + [
+                    (
+                        int(model[arg].as_signed_long())
+                        if isinstance(arg, Variable)
+                        else str(arg)
+                    )
+                    for arg in inst.args
+                ]
                 res += "    " + inst.disassembly(vals) + "\n"
             yield res
             self.solver.add(
@@ -83,11 +100,15 @@ class Recipe:
             )
 
     def output(self):
+        num = 0
         res: str = ""
         res += self.meta["prolog"] + "\n"
         for case in self.solve():
+            num += 1
+            res += f"    # Test case #{num}\n\n"
             res += self.meta["reset"] + "\n\n"
             res += case + "\n"
         res += self.meta["reset"] + "\n\n"
+        res += f"    # {num} cases generated.\n\n"
         res += self.meta["epilog"] + "\n"
         return res

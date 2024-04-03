@@ -19,7 +19,7 @@ def hello(r: Recipe):
         imm2 % 4 == 0,
         reg2 == reg1 + 1,
         Or(reg1 == 1, reg1 == 2),
-        Or(shift1 == InstNameEnum.SLLI.value, shift1 == InstNameEnum.SRLI.value)
+        Or(shift1 == InstNameEnum.SLLI.value, shift1 == InstNameEnum.SRLI.value),
     ]
 
     r << Inst.make("addi", reg1, reg2, imm1)

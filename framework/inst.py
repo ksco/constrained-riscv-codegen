@@ -11,6 +11,9 @@ class Variable(z3.BitVecRef):
             z3.Z3_mk_const(ctx.ref(), z3.to_symbol(name, ctx), bv.ast), ctx
         )
 
+    def initial_constraints(self):
+        return []
+
     @staticmethod
     def name(val: int) -> str:
         return str(val)
@@ -26,6 +29,12 @@ class GPR(Variable):
         return f"x{val}"
 
 
+class MEM(GPR):
+    @staticmethod
+    def name(val: int) -> str:
+        return f"(x{val})"
+
+
 class FPR(Variable):
     @staticmethod
     def name(val: int) -> str:
@@ -38,6 +47,28 @@ class VFR(Variable):
         return f"v{val}"
 
 
+class LMUL(Variable):
+    def initial_constraints(self):
+        return [self >= 0, self <= 7, self != 4]
+
+    @staticmethod
+    def name(val: int) -> str:
+        # page 12, v-spec-1.0
+        assert 0 <= val <= 7 and val != 4
+        return ["m1", "m2", "m4", "m8", "", "mf8", "f4", "mf2"][val]
+
+
+class SEW(Variable):
+    def initial_constraints(self):
+        return [self >= 0, self <= 3]
+
+    @staticmethod
+    def name(val: int) -> str:
+        # page 10, v-spec-1.0
+        assert 0 <= val <= 3
+        return ["e8", "e16", "e32", "e64"][val]
+
+
 class InstNameEnum(Enum):
     @staticmethod
     def _generate_next_value_(name, start, count, last_values):
@@ -46,13 +77,24 @@ class InstNameEnum(Enum):
     ADDI = auto()
     SLLI = auto()
     SRLI = auto()
+    VLE8_V = auto()
+    VLE16_V = auto()
+    VLE32_V = auto()
+    VLE64_V = auto()
+    VSE8_V = auto()
+    VSE16_V = auto()
+    VSE32_V = auto()
+    VSE64_V = auto()
+    VADD_VV = auto()
+    VMUL_VV = auto()
+    VSUB_VV = auto()
     Count = auto()
 
 
 class InstName(Variable):
     @staticmethod
     def name(val: int) -> str:
-        return str(InstNameEnum(val).name).lower()
+        return str(InstNameEnum(val).name).lower().replace("_", ".")
 
 
 Arg: TypeAlias = Variable | str
