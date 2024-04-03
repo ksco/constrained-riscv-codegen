@@ -55,7 +55,7 @@ class LMUL(Variable):
     def name(val: int) -> str:
         # page 12, v-spec-1.0
         assert 0 <= val <= 7 and val != 4
-        return ["m1", "m2", "m4", "m8", "", "mf8", "f4", "mf2"][val]
+        return ["m1", "m2", "m4", "m8", "", "mf8", "mf4", "mf2"][val]
 
 
 class SEW(Variable):
