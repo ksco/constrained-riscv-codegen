@@ -1,8 +1,8 @@
 from .common import init_gprs, disable_multicore, enable_vector
 
-# Simple userspace template
+# t1 template
 template = {
-    "prolog": f"""    #### Generated using basic rvv integer chaining template ####
+    "prolog": f"""    #### Generated using t1 template ####
 
     # PROLOG: Initialize all GPRs to zero
     .section .text.init
