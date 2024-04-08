@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Callable, TypedDict, List, Set
 import z3
 
-from .inst import Arg, Variable, Inst
+from .inst import Arg, Variable, Inst, Nst
 
 RecipeMeta = TypedDict(
     "RecipeMeta",
@@ -65,6 +65,11 @@ class Recipe:
         )
         return s
 
+    def any_labels(self) -> bool:
+        return any(
+            isinstance(arg, Nst) for inst in self.instructions for arg in inst.args
+        )
+
     def solve(self):
         collected_vars: Set[Arg] = self.collect_vars()
         if collected_vars != self.vars:
@@ -75,6 +80,7 @@ class Recipe:
         while self.solver.check() == z3.sat:
             model = self.solver.model()
             res: str = ""
+            n = 1
             for inst in self.instructions:
                 assert all(
                     model[arg] is not None
@@ -93,7 +99,16 @@ class Recipe:
                     )
                     for arg in inst.args
                 ]
+                if len(inst.args) > 0 and isinstance(
+                    inst.args[len(inst.args) - 1], Nst
+                ):
+                    nst: Nst = inst.args[len(inst.args) - 1]
+                    nst.forward = vals[len(vals) - 1] > n
+                if self.any_labels():
+                    res += f"{n}:\n"
                 res += "    " + inst.disassembly(vals) + "\n"
+
+                n += 1
             yield res
             self.solver.add(
                 z3.Or([f() != model[f] for f in model.decls() if f.arity() == 0])

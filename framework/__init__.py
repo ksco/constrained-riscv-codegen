@@ -1,5 +1,6 @@
 from typing import Set, List, Optional
 from argparse import ArgumentParser, Namespace
+from recipes.branch import branch
 from recipes.hello import hello
 from recipes.rvv_integer_chaining_basic import rvv_integer_chaining_basic
 
@@ -12,6 +13,10 @@ registered_recipes: List[Recipe] = [
         hello,
         {"name": "hello", "desc": "Hello world recipe as an simple example of the API."}
         | basic.template,
+    ),
+    Recipe(
+        branch,
+        {"name": "branch", "desc": "Demonstrate how branches works."} | basic.template,
     ),
     Recipe(
         rvv_integer_chaining_basic,

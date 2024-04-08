@@ -41,6 +41,13 @@ class FPR(Variable):
         return f"f{val}"
 
 
+class Nst(Variable):
+    forward: bool = False
+
+    def name(self, val: int) -> str:
+        return f"{val}f" if self.forward else f"{val}b"
+
+
 class VFR(Variable):
     @staticmethod
     def name(val: int) -> str:
@@ -77,6 +84,8 @@ class InstNameEnum(Enum):
     ADDI = auto()
     SLLI = auto()
     SRLI = auto()
+    BEQ = auto()
+    BNE = auto()
     VLE8_V = auto()
     VLE16_V = auto()
     VLE32_V = auto()
